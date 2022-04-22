@@ -1,0 +1,21 @@
+/* Register New Patient */
+.register {
+	margin-top: 25px;
+}
+.logo-title {
+	text-align: center;
+}
+.register-wrapper {
+	display: flex;
+	flex-direction: column;
+	gap: 25px;
+	align-items: center;
+	margin: 20px;
+	min-height: 90vh;
+}
+.registeruser-form {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 20px;
+}
