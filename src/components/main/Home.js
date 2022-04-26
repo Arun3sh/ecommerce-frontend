@@ -1,11 +1,17 @@
 import './Home.css';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import axios from 'axios';
 import { productApi } from './../../global';
+import { myContext } from '../../App';
+import { useHistory } from 'react-router-dom';
 
 function Home() {
+	const { query, setQuery } = useContext(myContext);
+	const history = useHistory();
+
 	const [categories, setCategories] = useState([]);
 	const [other, setOther] = useState([]);
+
 	const imgData = [
 		'https://m.media-amazon.com/images/I/713l-IgDaXL._SX3000_.jpg',
 		'https://m.media-amazon.com/images/I/6113jhUvaoL._SX3000_.jpg',
@@ -52,18 +58,35 @@ function Home() {
 				</div>
 
 				<section className="other-section">
+					{/* Categories where user can click and go to veiw particlar products */}
 					<div className="category-wrapper">
 						{categories.map(({ cat_name, cat_img }, index) => (
-							<div className="category-div" key={index}>
+							<div
+								className="category-div"
+								key={index}
+								style={{ cursor: 'pointer' }}
+								onClick={() =>
+									setQuery(`?category=${cat_name}`) & history.push(`/product?category=${cat_name}`)
+								}
+							>
 								<img src={cat_img} alt={cat_name} aria-label={cat_name} />
 								<h5 className="category-heading">{cat_name}</h5>
 							</div>
 						))}
 					</div>
+
+					{/* Few pre-defined price filter by Category */}
 					{other.map(({ cat_name, cat_img, price }, index) => (
 						<div className="other-wrapper" key={index}>
 							<img src={cat_img} alt={cat_name} aria-label={cat_name} />
-							<h5 className="other-heading">
+							<h5
+								className="other-heading"
+								style={{ cursor: 'pointer' }}
+								onClick={() =>
+									setQuery(`?category=${cat_name}&${price.split(' ').join('=')}`) &
+									history.push(`/product?category=${cat_name}&${price.split(' ').join('=')}`)
+								}
+							>
 								{cat_name} {price}
 							</h5>
 						</div>
