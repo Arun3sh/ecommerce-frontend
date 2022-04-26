@@ -17,7 +17,11 @@
 .nav-link {
 	width: 100px;
 }
-
+.login-link,
+.logout-link {
+	color: blue;
+	margin-left: auto !important;
+}
 .offcanvas-end {
 	width: 240px;
 	transition: 500ms;

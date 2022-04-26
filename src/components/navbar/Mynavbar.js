@@ -1,7 +1,5 @@
 import './Mynavbar.css';
-import { Navbar, Nav, Offcanvas, NavDropdown } from 'react-bootstrap';
-// import { HashLink } from 'react-router-hash-link';
-// import { useContext } from 'react';
+import { Navbar, Nav } from 'react-bootstrap';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
