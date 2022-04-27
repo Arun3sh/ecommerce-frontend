@@ -7,21 +7,23 @@ import { Badge, Button, MenuItem, Select, TextField } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import { useState } from 'react';
+import { useHistory } from 'react-router-dom';
 
 function Mynavbar() {
 	const [selectCategory, setSelectCategory] = useState('All Categories');
 	const textColor = { marginRight: '10px' };
-	const categoryList = ['Appliances', 'Books', 'Mobile', 'Shoe'];
+	const categoryList = ['Appliances', 'Books', 'Mobile', 'Footwear'];
+	const history = useHistory();
 
 	const formValidationSchema = yup.object({
-		search: yup.string().required('Please add your contact info'),
+		search: yup.string().required(),
 	});
-	const { values, handleChange, handleSubmit, errors } = useFormik({
+	const { values, handleChange, handleSubmit } = useFormik({
 		initialValues: {
 			search: '',
 		},
 		validationSchema: formValidationSchema,
-		onSubmit: () => console.log('hi', values),
+		onSubmit: () => history.push(`/product?category=${selectCategory}&search=${values.search}`),
 	});
 	return (
 		<header className="nav-header">
