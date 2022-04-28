@@ -6,15 +6,20 @@ import { Link } from 'react-router-dom';
 import { Badge, Button, MenuItem, Select, TextField } from '@mui/material';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { myContext } from '../../App';
 
 function Mynavbar() {
+	const { cartCount } = useContext(myContext);
+
 	const [selectCategory, setSelectCategory] = useState('All Categories');
-	const textColor = { marginRight: '10px' };
-	const categoryList = ['Appliances', 'Books', 'Mobile', 'Footwear'];
 	const history = useHistory();
 
+	const textColor = { marginRight: '10px' };
+	const categoryList = ['Appliances', 'Books', 'Mobile', 'Footwear'];
+
+	// Form validation for search so that there is no api call for empty string search
 	const formValidationSchema = yup.object({
 		search: yup.string().required(),
 	});
@@ -25,6 +30,7 @@ function Mynavbar() {
 		validationSchema: formValidationSchema,
 		onSubmit: () => history.push(`/product?category=${selectCategory}&search=${values.search}`),
 	});
+
 	return (
 		<header className="nav-header">
 			<Navbar className="container-sm mynav-wrapper" expand="sm">
@@ -80,8 +86,8 @@ function Mynavbar() {
 							Login
 						</Link>
 
-						<Link className="nav-link" to="#about">
-							<Badge className="cart-icon" color="primary" badgeContent={1}>
+						<Link className="nav-link" to="/my-cart">
+							<Badge className="cart-icon" color="primary" badgeContent={cartCount}>
 								<ShoppingCartIcon />{' '}
 							</Badge>
 						</Link>

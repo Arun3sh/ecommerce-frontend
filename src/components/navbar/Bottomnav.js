@@ -5,9 +5,11 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { AiOutlineUser } from 'react-icons/ai';
 import { useState } from 'react';
 import { useContext } from 'react';
+import { myContext } from '../../App';
 import { Link } from 'react-router-dom';
 
 function Bottomnav() {
+	const { cartCount } = useContext(myContext);
 	const [value, setValue] = useState(0);
 
 	return (
@@ -15,6 +17,7 @@ function Bottomnav() {
 			<BottomNavigation
 				showLabels
 				value={value}
+				style={{ height: '70px' }}
 				onChange={(event, newValue) => {
 					setValue(newValue);
 				}}
@@ -22,24 +25,31 @@ function Bottomnav() {
 				<BottomNavigationAction
 					className="bottomNav-text"
 					label="Home"
-					icon={<MdOutlineHome />}
-					href="#home"
+					icon={
+						<Link to="/">
+							<MdOutlineHome />
+						</Link>
+					}
 				/>
 				<BottomNavigationAction
 					className="bottomNav-text"
 					label="User"
-					icon={<AiOutlineUser />}
-					href="#user"
+					icon={
+						<Link to="/user">
+							<AiOutlineUser />
+						</Link>
+					}
 				/>
 				<BottomNavigationAction
 					className="bottomNav-text"
 					label="Cart"
 					icon={
-						<Badge className="cart-icon" color="primary" badgeContent={1}>
-							<ShoppingCartIcon />{' '}
-						</Badge>
+						<Link to="/my-cart">
+							<Badge className="cart-icon" color="primary" badgeContent={cartCount}>
+								<ShoppingCartIcon />{' '}
+							</Badge>
+						</Link>
 					}
-					href="#checkout"
 				/>
 			</BottomNavigation>
 		</Box>
