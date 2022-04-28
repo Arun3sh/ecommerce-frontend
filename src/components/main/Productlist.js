@@ -7,6 +7,7 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import { useHistory } from 'react-router-dom';
 
 function Productlist() {
 	let params = new URLSearchParams(window.location.search);
@@ -26,7 +27,7 @@ function Productlist() {
 	return (
 		<div className="product-wrapper container-sm">
 			<div className="product-container">
-				{search !== undefined ? (
+				{search !== null ? (
 					<h5>
 						Showing Results for : {category} - {search}
 					</h5>
@@ -34,9 +35,10 @@ function Productlist() {
 					<h5>Showing Results for : "{category}"</h5>
 				)}
 				<section className="product-card-section">
-					{product.map(({ product_name, price, soldBy, image }, index) => (
+					{product.map(({ _id, product_name, price, soldBy, image }, index) => (
 						<Productcard
 							key={index}
+							id={_id}
 							product_name={product_name}
 							price={price}
 							soldBy={soldBy}
@@ -49,10 +51,14 @@ function Productlist() {
 	);
 }
 
-function Productcard({ product_name, price, soldBy, image }) {
-	console.log(product_name, price, soldBy, image);
+function Productcard({ id, product_name, price, soldBy, image }) {
+	const history = useHistory();
 	return (
-		<Card className="product-card" sx={{ maxWidth: 335 }}>
+		<Card
+			className="product-card"
+			sx={{ maxWidth: 335 }}
+			onClick={() => history.push(`/view-product/${id}`)}
+		>
 			<CardMedia
 				className="card-image"
 				component="img"
