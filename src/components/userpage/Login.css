@@ -25,11 +25,7 @@
 .login-form {
 	display: flex;
 	flex-direction: column;
-}
-.radioGroup-userType {
-	flex-direction: row !important;
-	justify-content: space-between;
-	margin: 10px 05px;
+	gap: 15px;
 }
 .login-form-div {
 	display: flex;
@@ -44,7 +40,7 @@
 @media screen and (min-width: 426px) {
 	.login-container {
 		width: 100%;
-		flex-direction: row-reverse;
+		flex-direction: row;
 	}
 	.login-wrapper {
 		margin-top: 25px;
