@@ -1,0 +1,22 @@
+.myorder-container {
+	min-height: 90vh;
+}
+.order-ul {
+	padding: 0px;
+}
+.order-card-image {
+	object-fit: contain !important;
+	padding: 20px;
+}
+@media screen and (min-width: 426px) {
+	.order-card-image {
+		padding: 0px;
+		width: 100% !important;
+	}
+	.order-cardmedia {
+		width: 35%;
+	}
+	.order-card-content {
+		width: 65%;
+	}
+}

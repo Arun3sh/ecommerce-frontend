@@ -7,10 +7,13 @@ import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
+import './Myorder.css';
 
 function Myorder() {
 	const history = useHistory();
 	const [order, setOrder] = useState([]);
+
+	// To get the user orders
 	useEffect(() => {
 		const getUserOrder = async () => {
 			await axios
@@ -25,6 +28,7 @@ function Myorder() {
 		getUserOrder();
 	}, []);
 
+	// If no existing orders this is returned
 	if (order.length === 0) {
 		return <div className="myorder-wrapper container-sm">You've no orders yet.</div>;
 	}
@@ -32,17 +36,19 @@ function Myorder() {
 	return (
 		<div className="myorder-wrapper container-sm">
 			<div className="myorder-container">
+				{/* As orders are stored like [[{},orderID],[{},{},orderID],[{},orderID]] first mapping is done */}
 				{order.map((orders, index) => (
 					<div key={index}>
-						<ul>
+						<ul className="order-ul" style={{ padding: '0px' }}>
+							{/* After gettig one single order where one will array item is orderid and others are objects holding product info  */}
+							{/* That is filtered and mapped to get the product info and display it as card */}
 							{orders
 								.filter((e) => e.qty !== undefined)
 								.map(({ _id, product_name, image, price, qty }, index) => (
-									// <li>{product_name}</li>
 									<Card className="checkout-product-card" key={index}>
-										<div style={{ width: '35%' }}>
+										<div className="order-cardmedia">
 											<CardMedia
-												className="card-image"
+												className="order-card-image"
 												component="img"
 												height="160"
 												image={image}
@@ -50,7 +56,7 @@ function Myorder() {
 												onClick={() => history.push(`/view-product/${_id}`)}
 											/>
 										</div>
-										<CardContent style={{ width: '65%' }}>
+										<CardContent className="order-card-content">
 											<Typography
 												className="product-name"
 												gutterBottom
