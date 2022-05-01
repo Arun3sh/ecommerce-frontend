@@ -12,6 +12,7 @@ toast.configure({
 });
 
 function Footer() {
+	// User contact form validation
 	const formValidationSchema = yup.object({
 		name: yup.string().required('Your name is required'),
 		contact: yup.number().required('Your contact is required'),

@@ -17,6 +17,9 @@ function Login() {
 	const { setIsAuth, setCartCount, localCart, setLocalCart } = useContext(myContext);
 	const history = useHistory();
 
+	// To check for a valid user login
+	// if yes few items are stored in localstorage
+	// User_cart items are received and set into localCart
 	const checkUser = () => {
 		axios
 			.post(`${userApi}/login-user`, values)
@@ -29,6 +32,7 @@ function Login() {
 				toast.success('Log in success');
 				history.push('/');
 
+				// to get cart items
 				getCart(data.id);
 			})
 			.catch((err) => toast.error(err));
@@ -42,6 +46,8 @@ function Login() {
 				},
 			})
 			.then(({ data }) => {
+				// After getting the cart items - it has to be checked and merged with the localCart items
+				// As before login user may have added few items into cart and that has also be to added to localcart
 				data.user_cart.length > 0 ? setLocalCart([...data.user_cart]) : setLocalCart([]);
 				setCartCount(data.user_cart.length);
 			});

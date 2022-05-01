@@ -17,10 +17,12 @@ function Checkoutpage() {
 	let orderId;
 	const { localCart, setLocalCart, setCartCount } = useContext(myContext);
 	const history = useHistory();
-	let totalCost = 0;
 
+	// To calculate total cost of all the products that are being purchased
+	let totalCost = 0;
 	localCart.map((e) => (totalCost += e.price * e.qty));
 
+	// To confirm if the product purchase is succeeded or not
 	function storeOrder(value) {
 		if (value.error === undefined) {
 			if (value.emsg) {
@@ -29,6 +31,7 @@ function Checkoutpage() {
 			}
 			toast.success(value.msg);
 
+			// If payment is success than remove items from cart
 			setLocalCart([]);
 
 			setCartCount(0);
@@ -39,6 +42,7 @@ function Checkoutpage() {
 		}
 	}
 
+	// Razorpay Integration
 	function loadScript(src) {
 		return new Promise((resolve) => {
 			const script = document.createElement('script');
@@ -53,6 +57,7 @@ function Checkoutpage() {
 		});
 	}
 
+	// razorpay function to pay in demo mode
 	async function displayRazorpay() {
 		const res = await loadScript('https://checkout.razorpay.com/v1/checkout.js');
 
@@ -61,6 +66,7 @@ function Checkoutpage() {
 			return;
 		}
 
+		// Through payment api - totalcost and token is sent
 		const result = async () => {
 			await fetch(`${paymentApi}/order`, {
 				method: 'POST',
@@ -72,6 +78,7 @@ function Checkoutpage() {
 			})
 				.then((data) => data.json())
 				.then((d) => {
+					// If the order is placed without error order id is received from razorpay
 					if (d.error) {
 						toast.error('Connectivity issue with Razor pay. Please try later');
 						history.push('/checkout');
@@ -87,6 +94,7 @@ function Checkoutpage() {
 			return;
 		}
 
+		// This is to display the payment page from razorpay
 		const options = {
 			key: 'rzp_test_4k3ZRpnA3HTowh',
 			amount: (totalCost * 100).toString(),
@@ -101,6 +109,9 @@ function Checkoutpage() {
 				contact: '9999999999',
 			},
 			handler: async function (response) {
+				// Here all the products inside the cart is added in and orderid is also added to new array
+				// The new array will look like [{},{},orderId]
+				// the idea is to send the array and it will be pushed inside another array in DB
 				const newUserCart = [...localCart, orderId];
 
 				const data = {
@@ -111,6 +122,7 @@ function Checkoutpage() {
 					userId: id,
 				};
 
+				// To confirm payment success from razor pay
 				const result = async () => {
 					await fetch(`${paymentApi}/success`, {
 						method: 'POST',
@@ -139,6 +151,7 @@ function Checkoutpage() {
 		paymentObject.open();
 	}
 
+	// Form validation for user delivery address
 	const formValidationSchema = yup.object({
 		user_address: yup.string().required('Dont leave this field empty'),
 	});
@@ -157,11 +170,7 @@ function Checkoutpage() {
 				{/* Product info */}
 				<div className="product-checkout">
 					{localCart.map(({ product_name, price, qty, image }) => (
-						<Card
-							className="checkout-product-card"
-							// sx={{ maxWidth: 335 }}
-							// onClick={() => history.push(`/view-product/${id}`)}
-						>
+						<Card className="checkout-product-card">
 							<CardMedia
 								className="card-image"
 								component="img"
