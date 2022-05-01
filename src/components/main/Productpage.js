@@ -11,11 +11,12 @@ function Productpage() {
 	const { id } = useParams();
 	const history = useHistory();
 
-	const { cartCount, setCartCount } = useContext(myContext);
+	const { cartCount, setCartCount, localCart, setLocalCart } = useContext(myContext);
 
 	const [product, setProduct] = useState([]);
 	const [selectQty, setSelectQty] = useState(1);
 
+	// To get the specific product user chose
 	useEffect(() => {
 		const getProduct = async () => {
 			await axios
@@ -23,8 +24,37 @@ function Productpage() {
 				.then((data) => setProduct(data.data[0]))
 				.catch((err) => toast.error(err));
 		};
+
 		getProduct();
 	}, []);
+
+	// To add the necessary product info to the user_cart in DB
+	const addToCart = async () => {
+		const cartData = {
+			_id: id,
+			product_name: product.product_name,
+			price: product.price,
+			qty: selectQty,
+			image: product.image,
+			soldBy: product.soldBy,
+		};
+
+		// To check if the user is adding products that already exists in their cart
+		// Based on results products are stored or qty is increased
+
+		if (localCart.length > 0) {
+			let filter = localCart.filter((e) => e._id === cartData._id);
+			if (filter.length > 0) {
+				localCart.filter((e) => e._id === cartData._id).map((e) => (e.qty += selectQty));
+				return;
+			}
+		}
+		setCartCount(cartCount + 1);
+
+		setLocalCart([...localCart, cartData]);
+
+		return;
+	};
 
 	if (product.length === 0) {
 		return <div className="productpage-wrapper container-sm">Loading...</div>;
@@ -64,12 +94,9 @@ function Productpage() {
 						<Button
 							variant="contained"
 							color="primary"
-							onClick={() => setCartCount(cartCount + selectQty)}
+							onClick={() => setCartCount(cartCount + selectQty) & addToCart()}
 						>
 							Add to cart
-						</Button>
-						<Button variant="contained" color="primary" onClick={() => history.push('/checkout')}>
-							Buy Now
 						</Button>
 					</div>
 				</div>
