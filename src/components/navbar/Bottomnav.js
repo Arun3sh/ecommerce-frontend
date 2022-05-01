@@ -44,7 +44,7 @@ function Bottomnav() {
 					className="bottomNav-text"
 					label="Cart"
 					icon={
-						<Link to="/my-cart">
+						<Link to={'/my-cart/' + localStorage.getItem('user_id')}>
 							<Badge className="cart-icon" color="primary" badgeContent={cartCount}>
 								<ShoppingCartIcon />{' '}
 							</Badge>

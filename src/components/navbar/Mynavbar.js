@@ -1,5 +1,5 @@
 import './Mynavbar.css';
-import { Navbar, Nav } from 'react-bootstrap';
+import { Navbar, Nav, Offcanvas } from 'react-bootstrap';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { FaSearch } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
@@ -9,9 +9,14 @@ import { useFormik } from 'formik';
 import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { myContext } from '../../App';
+import { userApi } from '../../global';
+import axios from 'axios';
+import { toast } from 'react-toastify';
+import { HashLink } from 'react-router-hash-link';
 
 function Mynavbar() {
-	const { cartCount } = useContext(myContext);
+	const { isAuth, setIsAuth, cartCount, setCartCount, localCart, setLocalCart } =
+		useContext(myContext);
 
 	const [selectCategory, setSelectCategory] = useState('All Categories');
 	const history = useHistory();
@@ -31,14 +36,67 @@ function Mynavbar() {
 		onSubmit: () => history.push(`/product?category=${selectCategory}&search=${values.search}`),
 	});
 
+	const userLogout = async () => {
+		// To add items to cart in db only on logout
+		await axios({
+			url: `${userApi}/add-to-cart/${localStorage.getItem('user_id')}`,
+			method: 'PUT',
+			headers: {
+				'x-auth-token': localStorage.getItem('token'),
+			},
+			data: localCart,
+		}).catch((err) => toast.error(err));
+		setIsAuth(false);
+		setCartCount(0);
+		localStorage.clear();
+		setLocalCart([]);
+	};
+
 	return (
 		<header className="nav-header">
 			<Navbar className="container-sm mynav-wrapper" expand="sm">
-				<Navbar.Brand className="myMenu-big" style={textColor}>
+				<Navbar.Brand className="myMenu-brand" style={textColor}>
 					<Link className="navbar-brand" to="/">
 						eCommerce
 					</Link>
 				</Navbar.Brand>
+
+				<Navbar.Toggle aria-controls="offcanvasNavbar" />
+
+				{/* OffCanvas is used to display side menu for small screens */}
+				<Navbar.Offcanvas
+					id="offcanvasNavbar"
+					aria-labelledby="offcanvasNavbarLabel"
+					placement="end"
+				>
+					<Offcanvas.Header closeButton>
+						<Offcanvas.Title id="offcanvasNavbarLabel">eCommerce</Offcanvas.Title>
+					</Offcanvas.Header>
+					<Offcanvas.Body>
+						<Nav className="justify-content-end flex-grow-1 pe-3">
+							<HashLink className="nav-link" to="/#">
+								Home
+							</HashLink>
+							{isAuth ? (
+								<Link className="nav-link" to="/my-orders">
+									Orders
+								</Link>
+							) : (
+								''
+							)}
+
+							{!isAuth ? (
+								<Link className="nav-link" to="/login">
+									Login
+								</Link>
+							) : (
+								<HashLink className="nav-link" to="/#" onClick={() => userLogout()}>
+									Logout
+								</HashLink>
+							)}
+						</Nav>
+					</Offcanvas.Body>
+				</Navbar.Offcanvas>
 
 				{/* For displaying menu items in big screen */}
 				<Nav className="myMenu me-auto">
@@ -82,11 +140,29 @@ function Mynavbar() {
 					</div>
 
 					<div className="myMenu-big">
-						<Link className="nav-link" to="/login">
-							Login
-						</Link>
+						{/* User authentication based menu feature */}
+						{isAuth ? (
+							<Link className="nav-link" to="/my-orders">
+								Orders
+							</Link>
+						) : (
+							''
+						)}
 
-						<Link className="nav-link" to="/my-cart">
+						{!isAuth ? (
+							<Link className="nav-link" to="/login">
+								Login
+							</Link>
+						) : (
+							<HashLink className="nav-link" to="/#" onClick={() => userLogout()}>
+								Logout
+							</HashLink>
+						)}
+
+						<Link
+							className="nav-link"
+							to={isAuth ? '/my-cart/' + localStorage.getItem('user_id') : '/my-cart/0'}
+						>
 							<Badge className="cart-icon" color="primary" badgeContent={cartCount}>
 								<ShoppingCartIcon />{' '}
 							</Badge>

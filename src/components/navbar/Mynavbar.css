@@ -1,10 +1,13 @@
 .nav-header {
-	height: 80px;
+	height: 150px;
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	z-index: 1000;
 	background-color: white;
+}
+.mynav-wrapper {
+	height: 150px;
 }
 .myMenu {
 	width: 100%;
@@ -78,6 +81,7 @@
 		display: flex;
 	}
 	.nav-header {
+		height: 80px;
 		position: sticky;
 		top: 0;
 		left: 0;
