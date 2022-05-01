@@ -4,32 +4,35 @@ import './register.css';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { toast } from 'react-toastify';
+import { userApi } from '../../global';
 
 toast.configure();
 
 function Register() {
 	const history = useHistory();
 
-	// const register = () => {
-	// 	// To make sure same user exists
-	// 	fetch(`${patientAPI}/new-patient`, {
-	// 		method: 'POST',
-	// 		body: JSON.stringify({
-	// 			pt_name: values.username,
-	// 			email: values.email,
-	// 			password: values.password,
-	// 			contact: values.contact,
-	// 		}),
-	// 		headers: { 'Content-type': 'application/json' },
-	// 	}).then((res) => {
-	// 		if (res.ok) {
-	// 			history.push('/login');
-	// 			toast.success('Account Created');
-	// 		} else {
-	// 			toast.error('user email already exists!');
-	// 		}
-	// 	});
-	// };
+	const register = () => {
+		// To make sure if same user exists
+		fetch(`${userApi}/create-user`, {
+			method: 'POST',
+			body: JSON.stringify({
+				user_address: '',
+				user_name: values.username,
+				user_email: values.email,
+				password: values.password,
+				contact: values.contact,
+				user_cart: [],
+			}),
+			headers: { 'Content-type': 'application/json' },
+		}).then((res) => {
+			if (res.ok) {
+				history.push('/login');
+				toast.success('Account Created');
+			} else {
+				toast.error('user email already exists!');
+			}
+		});
+	};
 
 	const formValidationSchema = yup.object({
 		username: yup.string().min(4).required('please enter your name'),
@@ -56,7 +59,7 @@ function Register() {
 			cpassword: '',
 		},
 		validationSchema: formValidationSchema,
-		// onSubmit: () => register(),
+		onSubmit: () => register(),
 	});
 	return (
 		<div className="container-sm register">
