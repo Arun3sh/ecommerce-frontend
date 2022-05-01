@@ -11,19 +11,28 @@ import { useContext, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { myContext } from '../../App';
 import './Cartcheckout.css';
+import emptyCart from './../../assets/onlinecart.jpg';
 
 function Mycart() {
 	const history = useHistory();
 
 	const { isAuth, localCart, setLocalCart, setCartCount } = useContext(myContext);
 	setCartCount(localCart.length);
+
+	// If cart is empty then it returns empty cart image
 	if (localCart.length === 0) {
-		return <div className="mycart-wrapper container-sm">Your cart is empty</div>;
+		return (
+			<div className="mycart-wrapper container-sm">
+				<img style={{ width: '100%' }} src={emptyCart} aria-label="empty cart" alt="broken" />
+			</div>
+		);
 	}
 
+	// Displays user cart
 	return (
 		<div className="mycart-wrapper container-sm">
 			<div className="mycart-container">
+				{/* To load different products as card */}
 				{localCart
 					.filter((e) => e.qty !== 0)
 					.map((data, index) => (
@@ -37,6 +46,8 @@ function Mycart() {
 						/>
 					))}
 				<div>
+					{/* if user is authorized they can proceed to checkoout else they will be directed to login page */}
+
 					{isAuth ? (
 						<Button
 							variant="contained"
@@ -69,6 +80,7 @@ function Cartcard({ usercart, index, localCart, setLocalCart }) {
 
 	return (
 		<Card className="cart-product-card" key={index}>
+			{/* For product image */}
 			<CardMedia
 				className="cart-card-image"
 				component="img"
@@ -88,6 +100,8 @@ function Cartcard({ usercart, index, localCart, setLocalCart }) {
 				<Typography className="product-price" variant="h4" color="text.secondary">
 					₹{usercart.price}
 				</Typography>
+
+				{/* Button  group where user can see the QTY as well increase or decrease QTY */}
 				<CardActions className="card-btn-grp">
 					<ButtonGroup>
 						<Button variant="contained" onClick={() => reduceQty()}>
