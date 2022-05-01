@@ -10,11 +10,14 @@ import Typography from '@mui/material/Typography';
 import { useHistory } from 'react-router-dom';
 
 function Productlist() {
+	// To get the url search parameters
 	let params = new URLSearchParams(window.location.search);
 	const category = params.get('category');
 	const search = params.get('search');
+
 	const [product, setProduct] = useState([]);
 
+	// To load the products based on search inputs as well as query
 	useEffect(() => {
 		const getProducts = async () => {
 			await axios
@@ -24,6 +27,7 @@ function Productlist() {
 		};
 		getProducts();
 	}, [window.location.search]);
+
 	return (
 		<div className="product-wrapper container-sm">
 			<div className="product-container">
@@ -54,11 +58,7 @@ function Productlist() {
 function Productcard({ id, product_name, price, soldBy, image }) {
 	const history = useHistory();
 	return (
-		<Card
-			className="product-card"
-			sx={{ maxWidth: 335 }}
-			onClick={() => history.push(`/view-product/${id}`)}
-		>
+		<Card className="product-card" onClick={() => history.push(`/view-product/${id}`)}>
 			<CardMedia
 				className="card-image"
 				component="img"
